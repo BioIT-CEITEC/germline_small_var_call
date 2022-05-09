@@ -6,7 +6,8 @@ def cohort_data_input(wildcards):
     if config["use_cohort_data"] == True:
         return "cohort_data/cohort_variants.tsv"
     else:
-        return None
+        return []
+
 
 rule process_and_format_annot_variants:
     input:  var_tabs = expand("merged/{sample_name}.processed.tsv", sample_name = sample_tab.sample_name),
