@@ -8,6 +8,7 @@
       "mapped/{sample}.bam*"
     ],
     "outputs":[
+      "config.json",
       "logs/*",
       "merged/*",
       "variant_calls/*"
@@ -17,9 +18,7 @@
     "outputs_optional":[
     ],
     "report_index": "",
-    "reports":[
-      ""
-    ]
+    "reports": ""
   },
   "general_params": [
     "entity_name",
