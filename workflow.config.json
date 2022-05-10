@@ -1,30 +1,24 @@
 {
   "workflow_description": {
     "name":"germline_small_var_call",
-    "version": 1.0,
+    "version": 1.2,
     "label":"Germline small variant calling",
     "type":"germline_small_var_call",
     "inputs":[
       "mapped/{sample}.bam*"
     ],
     "outputs":[
-      "final_variant_table.xlsx",
-      "final_variant_table.tsv",
-      "per_sample_final_var_tabs/*",
       "logs/*",
       "merged/*",
-      "annotate/*",
       "variant_calls/*"
     ],
     "inputs_optional":[
-      "cohort_data/cohort_variants.tsv"
     ],
     "outputs_optional":[
-      "cohort_data/cohort_variants.tsv"
     ],
-    "report_index": "annotate/all_variants.annotated.tsv_summary.html",
+    "report_index": "",
     "reports":[
-      "annotate/all_variants.annotated.tsv_summary.html"
+      ""
     ]
   },
   "general_params": [
@@ -42,12 +36,6 @@
         "label": "Variant callers to use",
         "type": "string",
         "default": "strelka;vardict;haplotypecaller"
-      },
-      "format": {
-        "label": "Result variant table format",
-        "type": "enum",
-        "default": "default",
-        "list": ##INCLUDE:general/germline_small_var_call_format_files/format_info.json##
       }
     },
     "detailed": {
@@ -55,26 +43,6 @@
         "label": "Minimal variant frequency to report in percent.",
         "type": "int",
         "default": 25
-      },
-      "min_var_reads_threshold": {
-        "label": "Minimal number of variant supporting reads to report variant.",
-        "type": "int",
-        "default": 5
-      },
-      "min_callers_threshold": {
-        "label": "Minimal number callers to call the variant to report it.",
-        "type": "int",
-        "default": 1
-      },
-      "use_cohort_data": {
-        "label": "Load variants from previous experiments for annotations. need file: cohort_data/cohort_variants.tsv",
-        "type": "bool",
-        "default": false
-      },
-      "create_cohort_data": {
-        "label": "Create info about the variants from current and previous samples. create file: cohort_data/cohort_variants.tsv",
-        "type": "bool",
-        "default": true
       }
     }
   }

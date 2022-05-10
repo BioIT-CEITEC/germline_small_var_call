@@ -44,18 +44,11 @@ sample_tab = pd.DataFrame.from_dict(config["samples"],orient="index")
 #     read_pair_tags = ["_R1","_R2"]
 #     paired = "PE"
 
-
-
 callers = config["callers"].split(';')
 
-
 # DEFAULT VALUES
-if not "format" in config:
-    config["format"] = "default"
 if not "min_variant_frequency" in config:
     config["min_variant_frequency"] = 0
-if not "not_use_merged" in config:
-    config["not_use_merged"] = False
 
 wildcard_constraints:
     vartype = "snvs|indels",
@@ -63,21 +56,16 @@ wildcard_constraints:
     lib_name = "[^\.\/]+",
     read_pair_tag = "(_R.)?"
 
-
-
-
 ####################################
 # SEPARATE RULES
 include: "rules/callers.smk"
 include: "rules/variant_merging.smk"
-include: "rules/annotate.smk"
-include: "rules/variant_postprocessing.smk"
+
 
 ####################################
 # RULE ALL
 rule all:
     input:  
-        all_vars_xlsx = "final_variant_table.xlsx",
-        all_vars_tsv = "final_variant_table.tsv",
-        per_sample_var_tabs = expand("per_sample_final_var_tabs/{sample_name}.variants.xlsx", sample_name = sample_tab.sample_name),
+        merged = expand("merged/{sample_name}.processed.tsv", sample_name = sample_tab.sample_name),
+        normalized = expand("variant_calls/{sample_name}/{variant_caller}/{variant_caller}.norm.vcf",sample_name = sample_tab.sample_name,variant_caller = callers)
 
