@@ -11,7 +11,8 @@ f.write("\n##\n## RULE: process_and_format_annot_variants \n##\n")
 f.close()
 
 
-if hasattr(snakemake.input, 'cohort_data'):
+#if hasattr(snakemake.input, 'cohort_data'):
+if snakemake.input.cohort_data:
     cohort_data_filename = snakemake.input.cohort_data
 else:
     cohort_data_filename = "no_cohort_data"
