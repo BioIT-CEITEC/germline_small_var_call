@@ -11,16 +11,19 @@ GLOBAL_REF_PATH = config["globalResources"]
 # Reference processing
 #
 config["material"] = "DNA"
-if config["lib_ROI"] != "wgs" or config["lib_ROI"] != "RNA":
+if config["lib_ROI"] != "wgs" and config["lib_ROI"] != "RNA":
     # setting reference from lib_ROI
     f = open(os.path.join(GLOBAL_REF_PATH,"reference_info","lib_ROI.json"))
     lib_ROI_dict = json.load(f)
     f.close()
     config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
 else:
-    if config["lib_ROI"] != "RNA":
+    if config["lib_ROI"] == "RNA":
         config["material"] = "RNA"
         config["lib_ROI"] = "wgs"
+    else:
+        # temp until corrected on RNA alignment
+        config["material"] = "RNA"
 
 # setting organism from reference
 f = open(os.path.join(GLOBAL_REF_PATH,"reference_info","reference2.json"),)
