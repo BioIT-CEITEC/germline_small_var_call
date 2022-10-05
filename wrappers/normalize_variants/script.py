@@ -66,6 +66,11 @@ if os.stat(snakemake.input.vcf).st_size > 0:
     f.write("## COMMAND: "+command+"\n")
     shell(command)
 
+    # TESTING DELETE empty rows
+    f = open(log_filename, 'at')
+    command = "sed -i '/^[[:space:]]*$/d' " + snakemake.output.vcf
+    f.write("## COMMAND: " + command + "\n")
+    shell(command)
 
     # normalizing sample names in genotype fields to donor.tag
     command = "sed -i 's/\tFORMAT\t[^\t]*/\tFORMAT\t" + snakemake.wildcards.sample_name + "/' " + snakemake.output.vcf
