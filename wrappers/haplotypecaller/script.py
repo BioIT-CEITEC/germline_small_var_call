@@ -26,7 +26,7 @@ f = open(log_filename, 'a+')
 f.write("## VERSION: gatk "+version+"\n")
 f.close()
 
-if snakemake.params.lib_ROI == "wgs":
+if snakemake.params.lib_ROI == "no":
     intervals_call = ""
 else:
     intervals_call = " -L " + snakemake.input.regions

@@ -19,17 +19,23 @@ f.write("## VERSION: strelka "+version+"\n")
 f.close()
 
 #not implemented --targeted
-if snakemake.params.lib_ROI == "wgs":
+if snakemake.params.lib_ROI == "no":
     scope = ""
 else:
     scope = " --exome --callRegions " + snakemake.input.regions_gz + " "
+
+#not implemented --targeted
+if snakemake.params.material == "RNA":
+    rna_tag = " --rna "
+else:
+    rna_tag = ""
 
 
 shell("rm -fR " + snakemake.params.dir)
 
 
 command = "configureStrelkaGermlineWorkflow.py" + \
-          scope + \
+          scope + rna_tag + \
           " --bam " + snakemake.input.bam + \
           " --referenceFasta " + snakemake.input.ref + \
           " --runDir " + snakemake.params.dir + \

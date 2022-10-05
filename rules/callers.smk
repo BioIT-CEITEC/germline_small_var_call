@@ -7,11 +7,16 @@ def bam_input(wildcards):
 
     return expand("mapped/{input_bam}.{tag}",input_bam=wildcards.sample_name,tag=tag)[0]
 
+def lib_ROI_input(wildcards):
+    if config["lib_ROI"] != "no":
+        return expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0]
+    else:
+        return expand("{ref_dir}/seq/{ref_name}.dict",ref_dir=reference_directory,ref_name=config["reference"])[0],
 
 rule haplotypecaller:
     input:  bam = bam_input,
             ref=expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
-            regions=expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0],
+            regions=lib_ROI_input
     output: vcf="variant_calls/{sample_name}/haplotypecaller/haplotypecaller.vcf"
     log: "logs/{sample_name}/callers/haplotypecaller.log"
     threads: 5
@@ -25,34 +30,50 @@ rule haplotypecaller:
 rule vardict:
     input:  bam = bam_input,
             ref=expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
-            refdict=expand("{ref_dir}/seq/{ref_name}.dict",ref_dir=reference_directory,ref_name=config["reference"])[0],
-            regions=expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0],
+            regions=lib_ROI_input
     output: vcf="variant_calls/{sample_name}/vardict/vardict.vcf"
     log: "logs/{sample_name}/callers/vardict.log"
     threads: 10
     resources:
         mem_mb=8000
     params:
-        AF_threshold=config["min_variant_frequency"]
+        AF_threshold=config["min_variant_frequency"],
+        lib_ROI=config["lib_ROI"]
     conda: "../wrappers/vardict/env.yaml"
     script: "../wrappers/vardict/script.py"
 
+def strelka_lib_ROI_inputs(wildcards):
+    if config["lib_ROI"] != "no":
+        return {'regions_gz': expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed.gz",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0],
+                'regions_tbi':expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed.gz.tbi",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0]}
+    else:
+        return {}
+
 rule strelka:
-    input:  bam = bam_input,
+    input:  unpack(strelka_lib_ROI_inputs),
+            bam = bam_input,
             ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
-            regions_gz = expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed.gz",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0],
-            regions_tbi = expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed.gz.tbi",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0]
     output: vcf = "variant_calls/{sample_name}/strelka/strelka.vcf"
     log: "logs/{sample_name}/callers/strelka.log"
     threads: 10
     resources:
         mem_mb=6000
     params: dir="variant_calls/{sample_name}/strelka",
+            material=config["material"],
             lib_ROI=config["lib_ROI"],
             vcf= "variant_calls/{sample_name}/strelka/results/variants/variants.vcf.gz"
     conda: "../wrappers/strelka/env.yaml"
     script: "../wrappers/strelka/script.py"
 
+rule RNA_SplitNCigars:
+    input: bam = "mapped/{sample_name}.bam",
+           ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0]
+    output: bam = "mapped/{sample_name}.RNAsplit.bam",
+            bai = "mapped/{sample_name}.RNAsplit.bam.bai",
+    log:    run = "logs/{sample_name}/callers/RNA_SplitNCigars.log",
+    params: bai = "mapped/{sample_name}.RNAsplit.bai"
+    conda:  "../wrappers/RNA_SplitNCigars/env.yaml"
+    script: "../wrappers/RNA_SplitNCigars/script.py"
 
 
 # def mpileup_bam_input(wildcards):
