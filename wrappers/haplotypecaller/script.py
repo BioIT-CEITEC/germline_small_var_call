@@ -34,8 +34,11 @@ else:
 command = "mkdir -p " + os.path.dirname(snakemake.params.bamout)
 shell(command)
 
+command = "mkdir -p ./tmp"
+shell(command)
 
-command = "gatk --java-options \"-Xmx2g\" HaplotypeCaller" + \
+command = "export TMPDIR=./tmp TMP=./tmp && gatk --java-options \"-Xmx2g -Djava.io.tmpdir=./tmp\" HaplotypeCaller" + \
+               " --tmp-dir ./tmp " +\
                " -R "+ snakemake.input.ref +\
                " -I "+ snakemake.input.bam +\
                intervals_call +\
