@@ -71,6 +71,6 @@ include: "rules/variant_merging.smk"
 # RULE ALL
 rule all:
     input:  
-        merged = expand("merged/{sample_name}.processed.tsv", sample_name = sample_tab.sample_name),
+        merged = expand("merged/{sample_name}.variants.tsv", sample_name = sample_tab.sample_name),
         normalized = expand("variant_calls/{sample_name}/{variant_caller}/{variant_caller}.norm.vcf",sample_name = sample_tab.sample_name,variant_caller = callers)
 
