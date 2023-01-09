@@ -58,10 +58,10 @@ rule strelka:
     threads: 10
     resources:
         mem_mb=6000
-    params: dir="variant_calls/{sample_name}/strelka",
+    params: dir = os.path.join(GLOBAL_TMPD_PATH,"variant_calls/{sample_name}/strelka"),
             material=config["material"],
             lib_ROI=config["lib_ROI"],
-            vcf= "variant_calls/{sample_name}/strelka/results/variants/variants.vcf.gz"
+            vcf= os.path.join(GLOBAL_TMPD_PATH,"variant_calls/{sample_name}/strelka/results/variants/variants.vcf.gz"),
     conda: "../wrappers/strelka/env.yaml"
     script: "../wrappers/strelka/script.py"
 
