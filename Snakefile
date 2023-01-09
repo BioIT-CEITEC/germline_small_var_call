@@ -9,6 +9,8 @@ min_version("5.18.0")
 GLOBAL_REF_PATH = config["globalResources"]
 GLOBAL_TMPD_PATH = config["globalTmpdPath"]
 
+os.makedirs(GLOBAL_TMPD_PATH, exist_ok=True)
+
 # Reference processing
 #
 config["material"] = "DNA"
