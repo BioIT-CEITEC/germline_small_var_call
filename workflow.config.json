@@ -12,13 +12,7 @@
       "logs/*",
       "merged/*",
       "variant_calls/*"
-    ],
-    "inputs_optional":[
-    ],
-    "outputs_optional":[
-    ],
-    "report_index": "",
-    "reports": ""
+    ]
   },
   "general_params": [
     "entity_name",
