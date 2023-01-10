@@ -1,47 +1,41 @@
 {
   "workflow_description": {
-    "name":"germline_small_var_call",
+    "name": "germline_small_var_call",
     "version": 1.2,
-    "label":"Germline small variant calling",
-    "type":"germline_small_var_call",
-    "inputs":[
+    "label": "Germline small variant calling",
+    "type": "germline_small_var_call",
+    "inputs": [
       "mapped/{sample}.bam*"
     ],
-    "outputs":[
+    "outputs": [
       "config.json",
       "logs/*",
       "merged/*",
       "variant_calls/*"
     ],
-    "inputs_optional":[
+    "general_params": [
+      "entity_name",
+      "sample_name"
     ],
-    "outputs_optional":[
+    "requested_params": [
+      "is_paired",
+      "reference",
+      "lib_ROI"
     ],
-    "report_index": "",
-    "reports": ""
-  },
-  "general_params": [
-    "entity_name",
-    "sample_name"
-  ],
-  "requested_params": [
-    "is_paired",
-    "reference",
-    "lib_ROI"
-  ],
-  "gui_params" : {
-    "primary": {
-      "callers": {
-        "label": "Variant callers to use",
-        "type": "string",
-        "default": "strelka;vardict;haplotypecaller"
-      }
-    },
-    "detailed": {
-      "min_variant_frequency": {
-        "label": "Minimal variant frequency to report in percent.",
-        "type": "int",
-        "default": 25
+    "gui_params": {
+      "primary": {
+        "callers": {
+          "label": "Variant callers to use",
+          "type": "string",
+          "default": "strelka;vardict;haplotypecaller"
+        }
+      },
+      "detailed": {
+        "min_variant_frequency": {
+          "label": "Minimal variant frequency to report in percent.",
+          "type": "int",
+          "default": 25
+        }
       }
     }
   }
