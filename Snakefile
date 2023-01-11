@@ -9,8 +9,6 @@ min_version("5.18.0")
 GLOBAL_REF_PATH = config["globalResources"]
 GLOBAL_TMPD_PATH = config["globalTmpdPath"]
 
-os.makedirs(GLOBAL_TMPD_PATH, exist_ok=True)
-
 # Reference processing
 #
 config["material"] = "DNA"
@@ -67,7 +65,7 @@ include: "rules/variant_merging.smk"
 # RULE ALL
 rule all:
     input:
-        not_filtered_vcf=expand("merged/{sample_name}.raw_calls.vcf",sample_name=sample_tab.sample_name),
-        vcf=expand("merged/{sample_name}.processed.vcf",sample_name=sample_tab.sample_name),
-        tsv=expand("merged/{sample_name}.processed.tsv",sample_name=sample_tab.sample_name),
+        not_filtered_vcf=expand("germinal_varcalls/merged/{sample_name}.raw_calls.vcf",sample_name=sample_tab.sample_name),
+        vcf=expand("germinal_varcalls/merged/{sample_name}.final_variants.vcf",sample_name=sample_tab.sample_name),
+        tsv=expand("germinal_varcalls/merged/{sample_name}.final_variants.tsv",sample_name=sample_tab.sample_name),
         normalized = expand("germinal_varcalls/{sample_name}/{variant_caller}/{variant_caller}.norm.vcf",sample_name = sample_tab.sample_name,variant_caller = callers)

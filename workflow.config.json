@@ -11,7 +11,7 @@
       "config.json",
       "logs/*",
       "merged/*",
-      "variant_calls/*"
+      "germinal_varcalls"
     ]
   },
   "general_params": [
