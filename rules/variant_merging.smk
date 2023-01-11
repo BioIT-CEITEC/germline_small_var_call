@@ -5,9 +5,9 @@ rule merge_variant_callers:
                                             variant_caller = callers),
             ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
             dict= expand("{ref_dir}/seq/{ref_name}.dict",ref_dir=reference_directory,ref_name=config["reference"])[0],
-    output: not_filtered_vcf = "germinal_varcalls/merged/{sample_name}.raw_calls.vcf",
-            vcf= "germinal_varcalls/merged/{sample_name}.final_variants.vcf",
-            tsv = "germinal_varcalls/merged/{sample_name}.final_variants.tsv"
+    output: not_filtered_vcf = "germinal_varcalls/{sample_name}/{sample_name}.raw_calls.vcf",
+            vcf= "germinal_varcalls/{sample_name}/{sample_name}.final_variants.vcf",
+            tsv = "germinal_varcalls/{sample_name}/{sample_name}.final_variants.tsv"
     log:    "logs/{sample_name}/merge_variant_callers.log"
     params: min_var_reads_threshold = 5,
             min_callers_threshold = 1
