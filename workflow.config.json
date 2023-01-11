@@ -10,7 +10,7 @@
     "outputs":[
       "config.json",
       "logs/*",
-      "germinal_varcalls/*"
+      "germline_varcalls/*"
     ]
   },
   "general_params": [
