@@ -17,12 +17,12 @@ rule haplotypecaller:
     input:  bam = bam_input,
             ref=expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
             regions=lib_ROI_input
-    output: vcf="germinal_varcalls/{sample_name}/haplotypecaller/haplotypecaller.vcf"
+    output: vcf="germline_varcalls/{sample_name}/haplotypecaller/haplotypecaller.vcf"
     log: "logs/{sample_name}/callers/haplotypecaller.log"
     threads: 5
     resources:
         mem_mb=6000
-    params: bamout="germinal_varcalls/{sample_name}/haplotypecaller/realigned.bam",
+    params: bamout="germline_varcalls/{sample_name}/haplotypecaller/realigned.bam",
             lib_ROI=config["lib_ROI"]
     conda: "../wrappers/haplotypecaller/env.yaml"
     script: "../wrappers/haplotypecaller/script.py"
@@ -31,7 +31,7 @@ rule vardict:
     input:  bam = bam_input,
             ref=expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
             regions=lib_ROI_input
-    output: vcf="germinal_varcalls/{sample_name}/vardict/vardict.vcf"
+    output: vcf="germline_varcalls/{sample_name}/vardict/vardict.vcf"
     log: "logs/{sample_name}/callers/vardict.log"
     threads: 10
     resources:
@@ -53,15 +53,15 @@ rule strelka:
     input:  unpack(strelka_lib_ROI_inputs),
             bam = bam_input,
             ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
-    output: vcf = "germinal_varcalls/{sample_name}/strelka/strelka.vcf"
+    output: vcf = "germline_varcalls/{sample_name}/strelka/strelka.vcf"
     log: "logs/{sample_name}/callers/strelka.log"
     threads: 10
     resources:
         mem_mb=6000
-    params: dir = os.path.join(GLOBAL_TMPD_PATH,"germinal_varcalls/{sample_name}/strelka"),
+    params: dir = os.path.join(GLOBAL_TMPD_PATH,"germline_varcalls/{sample_name}/strelka"),
             material=config["material"],
             lib_ROI=config["lib_ROI"],
-            vcf= os.path.join(GLOBAL_TMPD_PATH,"germinal_varcalls/{sample_name}/strelka/results/variants/variants.vcf.gz"),
+            vcf= os.path.join(GLOBAL_TMPD_PATH,"germline_varcalls/{sample_name}/strelka/results/variants/variants.vcf.gz"),
     conda: "../wrappers/strelka/env.yaml"
     script: "../wrappers/strelka/script.py"
 
