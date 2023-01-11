@@ -45,13 +45,6 @@ reference_directory = os.path.join(GLOBAL_REF_PATH,config["organism"],config["re
 #
 sample_tab = pd.DataFrame.from_dict(config["samples"],orient="index")
 
-# if not config["is_paired"]:
-#     read_pair_tags = [""]
-#     paired = "SE"
-# else:
-#     read_pair_tags = ["_R1","_R2"]
-#     paired = "PE"
-
 callers = config["callers"].split(';')
 
 # DEFAULT VALUES
@@ -77,4 +70,4 @@ rule all:
         not_filtered_vcf=expand("merged/{sample_name}.raw_calls.vcf",sample_name=sample_tab.sample_name),
         vcf=expand("merged/{sample_name}.processed.vcf",sample_name=sample_tab.sample_name),
         tsv=expand("merged/{sample_name}.processed.tsv",sample_name=sample_tab.sample_name),
-        normalized = expand("variant_calls/{sample_name}/{variant_caller}/{variant_caller}.norm.vcf",sample_name = sample_tab.sample_name,variant_caller = callers)
+        normalized = expand("germinal_varcalls/{sample_name}/{variant_caller}/{variant_caller}.norm.vcf",sample_name = sample_tab.sample_name,variant_caller = callers)
