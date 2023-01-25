@@ -57,10 +57,10 @@ rule strelka:
     threads: 10
     resources:
         mem_mb=6000
-    params: dir="germline_varcalls/{sample_name}/strelka",
+    params: dir = os.path.join(GLOBAL_TMPD_PATH,"germline_varcalls/{sample_name}/strelka"),
             material=config["material"],
             lib_ROI=config["lib_ROI"],
-            vcf= "germline_varcalls/{sample_name}/strelka/results/variants/variants.vcf.gz"
+            vcf= os.path.join(GLOBAL_TMPD_PATH,"germline_varcalls/{sample_name}/strelka/results/variants/variants.vcf.gz"),
     conda: "../wrappers/strelka/env.yaml"
     script: "../wrappers/strelka/script.py"
 
@@ -128,16 +128,16 @@ rule varscan_single:
 #         ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
 #         regions=expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0],
 #     output:
-#         vcf="germline_varcalls/{sample_name}/varscan/VarScan2.vcf",
+#         vcf="variant_calls/{sample_name}/varscan/VarScan2.vcf",
 #     log: "logs/{sample_name}/callers/varscan.log"
 #     threads: 1
 #     resources:
 #         mem_mb=9000
 #     params:
-#         tumor_pileup = "germline_varcalls/{sample_name}/varscan/{sample_name}_tumor.mpileup.gz",
-#         normal_pileup = "germline_varcalls/{sample_name}/varscan/{sample_name}_normal.mpileup.gz",
-#         snp="germline_varcalls/{sample_name}/varscan/VarScan2.snp.vcf",
-#         indel="germline_varcalls/{sample_name}/varscan/VarScan2.indel.vcf",
+#         tumor_pileup = "variant_calls/{sample_name}/varscan/{sample_name}_tumor.mpileup.gz",
+#         normal_pileup = "variant_calls/{sample_name}/varscan/{sample_name}_normal.mpileup.gz",
+#         snp="variant_calls/{sample_name}/varscan/VarScan2.snp.vcf",
+#         indel="variant_calls/{sample_name}/varscan/VarScan2.indel.vcf",
 #         extra = config["varscan_extra_params"],
 #         # " --strand-filter 0 --p-value 0.95 --min-coverage 50 --min-reads2 8 --min-avg-qual 25 --min-var-freq 0.0005",
 #         calling_type = config["calling_type"]

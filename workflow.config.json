@@ -10,13 +10,7 @@
     "outputs":[
       "logs/*",
       "germline_varcalls/*"
-    ],
-    "inputs_optional":[
-    ],
-    "outputs_optional":[
-    ],
-    "report_index": "",
-    "reports": ""
+    ]
   },
   "general_params": [
     "entity_name",
