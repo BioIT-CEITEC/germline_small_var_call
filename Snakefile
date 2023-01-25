@@ -18,9 +18,9 @@ if config["lib_ROI"] != "wgs" and config["lib_ROI"] != "RNA":
     f.close()
     config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
 else:
-    config["lib_ROI"] = "no"
     if config["lib_ROI"] == "RNA":
         config["material"] = "RNA"
+    config["lib_ROI"] = "wgs"
 
 
 # setting organism from reference
@@ -31,6 +31,19 @@ config["species_name"] = [organism_name for organism_name in reference_dict.keys
 config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
 if len(config["species_name"].split(" (")) > 1:
     config["species"] = config["species_name"].split(" (")[1].replace(")","")
+
+
+# ####################################
+# # create caller list from table
+callers = []
+if config["germline_use_strelka"]:
+    callers.append("strelka")
+if config["germline_use_vardict"]:
+    callers.append("vardict")
+if config["germline_use_haplotypecaller"]:
+    callers.append("haplotypecaller")
+if config["germline_use_varscan"]:
+    callers.append("varscan")
 
 
 ##### Config processing #####
@@ -71,6 +84,4 @@ include: "rules/variant_merging.smk"
 # RULE ALL
 rule all:
     input:  
-        merged = expand("merged/{sample_name}.variants.tsv", sample_name = sample_tab.sample_name),
-        normalized = expand("variant_calls/{sample_name}/{variant_caller}/{variant_caller}.norm.vcf",sample_name = sample_tab.sample_name,variant_caller = callers)
-
+        final_variants = expand("germline_varcalls/{sample_name}.final_variants.tsv", sample_name = sample_tab.sample_name)

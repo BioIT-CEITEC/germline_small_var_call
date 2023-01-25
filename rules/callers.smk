@@ -1,4 +1,3 @@
-
 def bam_input(wildcards):
     if config["material"] != "RNA":
         tag = "bam"
@@ -8,7 +7,7 @@ def bam_input(wildcards):
     return expand("mapped/{input_bam}.{tag}",input_bam=wildcards.sample_name,tag=tag)[0]
 
 def lib_ROI_input(wildcards):
-    if config["lib_ROI"] != "no":
+    if config["lib_ROI"] != "wgs":
         return expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0]
     else:
         return expand("{ref_dir}/seq/{ref_name}.dict",ref_dir=reference_directory,ref_name=config["reference"])[0],
@@ -17,12 +16,12 @@ rule haplotypecaller:
     input:  bam = bam_input,
             ref=expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
             regions=lib_ROI_input
-    output: vcf="variant_calls/{sample_name}/haplotypecaller/haplotypecaller.vcf"
+    output: vcf="germline_varcalls/{sample_name}/haplotypecaller/haplotypecaller.vcf"
     log: "logs/{sample_name}/callers/haplotypecaller.log"
     threads: 5
     resources:
         mem_mb=6000
-    params: bamout="variant_calls/{sample_name}/haplotypecaller/realigned.bam",
+    params: bamout="germline_varcalls/{sample_name}/haplotypecaller/realigned.bam",
             lib_ROI=config["lib_ROI"]
     conda: "../wrappers/haplotypecaller/env.yaml"
     script: "../wrappers/haplotypecaller/script.py"
@@ -31,7 +30,7 @@ rule vardict:
     input:  bam = bam_input,
             ref=expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
             regions=lib_ROI_input
-    output: vcf="variant_calls/{sample_name}/vardict/vardict.vcf"
+    output: vcf="germline_varcalls/{sample_name}/vardict/vardict.vcf"
     log: "logs/{sample_name}/callers/vardict.log"
     threads: 10
     resources:
@@ -53,15 +52,15 @@ rule strelka:
     input:  unpack(strelka_lib_ROI_inputs),
             bam = bam_input,
             ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
-    output: vcf = "variant_calls/{sample_name}/strelka/strelka.vcf"
+    output: vcf = "germline_varcalls/{sample_name}/strelka/strelka.vcf"
     log: "logs/{sample_name}/callers/strelka.log"
     threads: 10
     resources:
         mem_mb=6000
-    params: dir="variant_calls/{sample_name}/strelka",
+    params: dir="germline_varcalls/{sample_name}/strelka",
             material=config["material"],
             lib_ROI=config["lib_ROI"],
-            vcf= "variant_calls/{sample_name}/strelka/results/variants/variants.vcf.gz"
+            vcf= "germline_varcalls/{sample_name}/strelka/results/variants/variants.vcf.gz"
     conda: "../wrappers/strelka/env.yaml"
     script: "../wrappers/strelka/script.py"
 
@@ -74,6 +73,34 @@ rule RNA_SplitNCigars:
     params: bai = "mapped/{sample_name}.RNAsplit.bai"
     conda:  "../wrappers/RNA_SplitNCigars/env.yaml"
     script: "../wrappers/RNA_SplitNCigars/script.py"
+
+
+rule varscan_single:
+    input:
+        bam = bam_inputs,
+        ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
+        lib_ROI=lib_ROI_input
+    output:
+        vcf="germline_varcalls/{sample_name}/varscan/VarScan2.vcf",
+    log: "logs/{sample_name}/callers/varscan.log"
+    threads: 1
+    resources:
+        mem_mb=9000
+    params:
+        mpileup = "germline_varcalls/{sample_name}/varscan/{sample_name}.mpileup.gz",
+        snp="germline_varcalls/{sample_name}/varscan/VarScan2.snp.vcf",
+        indel="germline_varcalls/{sample_name}/varscan/VarScan2.indel.vcf",
+        extra = config["varscan_extra_params"],
+        # " --strand-filter 0 --p-value 0.95 --min-coverage 50 --min-reads2 8 --min-avg-qual 25 --min-var-freq 0.0005",
+    conda: "../wrappers/varscan/env.yaml"
+    script: "../wrappers/varscan/script.py"
+
+
+
+
+
+
+
 
 
 # def mpileup_bam_input(wildcards):
@@ -101,16 +128,16 @@ rule RNA_SplitNCigars:
 #         ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
 #         regions=expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0],
 #     output:
-#         vcf="variant_calls/{sample_name}/varscan/VarScan2.vcf",
+#         vcf="germline_varcalls/{sample_name}/varscan/VarScan2.vcf",
 #     log: "logs/{sample_name}/callers/varscan.log"
 #     threads: 1
 #     resources:
 #         mem_mb=9000
 #     params:
-#         tumor_pileup = "variant_calls/{sample_name}/varscan/{sample_name}_tumor.mpileup.gz",
-#         normal_pileup = "variant_calls/{sample_name}/varscan/{sample_name}_normal.mpileup.gz",
-#         snp="variant_calls/{sample_name}/varscan/VarScan2.snp.vcf",
-#         indel="variant_calls/{sample_name}/varscan/VarScan2.indel.vcf",
+#         tumor_pileup = "germline_varcalls/{sample_name}/varscan/{sample_name}_tumor.mpileup.gz",
+#         normal_pileup = "germline_varcalls/{sample_name}/varscan/{sample_name}_normal.mpileup.gz",
+#         snp="germline_varcalls/{sample_name}/varscan/VarScan2.snp.vcf",
+#         indel="germline_varcalls/{sample_name}/varscan/VarScan2.indel.vcf",
 #         extra = config["varscan_extra_params"],
 #         # " --strand-filter 0 --p-value 0.95 --min-coverage 50 --min-reads2 8 --min-avg-qual 25 --min-var-freq 0.0005",
 #         calling_type = config["calling_type"]

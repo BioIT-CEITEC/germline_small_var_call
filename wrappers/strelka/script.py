@@ -19,7 +19,7 @@ f.write("## VERSION: strelka "+version+"\n")
 f.close()
 
 #not implemented --targeted
-if snakemake.params.lib_ROI == "no":
+if snakemake.params.lib_ROI == "wgs":
     scope = ""
 else:
     scope = " --exome --callRegions " + snakemake.input.regions_gz + " "

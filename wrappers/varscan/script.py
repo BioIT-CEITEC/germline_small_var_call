@@ -19,39 +19,20 @@ shell.executable("/bin/bash")
 extra_params = snakemake.params.get("extra", "")
 
 # Building output dirs
-if snakemake.params.calling_type == "paired":
-    makedirs(os.path.dirname(snakemake.output.snp))
-    makedirs(os.path.dirname(snakemake.output.indel))
-else:
-    makedirs(os.path.dirname(snakemake.output.vcf))
+makedirs(os.path.dirname(snakemake.output.vcf))
 
 
 command = "samtools mpileup -B -q 1 -Q 20  " + \
-          " --positions " + snakemake.input.regions + \
+          " --positions " + snakemake.input.lib_ROI + \
           " -f " + snakemake.input.ref + \
-          " " + snakemake.input.tumor + \
-          " > " + snakemake.params.tumor_pileup + \
+          " " + snakemake.input.bam + \
+          " > " + snakemake.params.mpileup + \
           " 2>> " + log_filename
 
 f = open(log_filename, 'at')
 f.write("## COMMAND: " + command + "\n")
 f.close()
 shell(command)
-
-if snakemake.params.calling_type == "paired":
-    command = "samtools mpileup -B -q 1 -Q 20  " + \
-              " --positions " + snakemake.input.regions + \
-              " -f " + snakemake.input.ref + \
-              " " + snakemake.input.normal + \
-              " > " + snakemake.params.normal_pileup + \
-              " 2>> " + log_filename
-
-    f = open(log_filename, 'at')
-    f.write("## COMMAND: " + command + "\n")
-    f.close()
-    shell(command)
-
-
 
 # Output prefix
 

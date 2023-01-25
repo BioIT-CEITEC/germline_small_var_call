@@ -8,10 +8,8 @@
       "mapped/{sample}.bam*"
     ],
     "outputs":[
-      "config.json",
       "logs/*",
-      "merged/*",
-      "variant_calls/*"
+      "germline_varcalls/*"
     ],
     "inputs_optional":[
     ],
@@ -25,16 +23,30 @@
     "sample_name"
   ],
   "requested_params": [
-    "is_paired",
     "reference",
     "lib_ROI"
   ],
   "gui_params" : {
     "primary": {
-      "callers": {
-        "label": "Variant callers to use",
-        "type": "string",
-        "default": "strelka;vardict;haplotypecaller"
+      "germline_use_strelka": {
+        "label": "Use strelka for germline variant calling.",
+        "type": "bool",
+        "default": true
+      },
+      "germline_use_vardict": {
+        "label": "Use vardict for germline variant calling.",
+        "type": "bool",
+        "default": true
+      },
+      "germline_use_haplotypecaller": {
+        "label": "Use haplotypecaller for germline variant calling.",
+        "type": "bool",
+        "default": true
+      },
+      "germline_use_varscan": {
+        "label": "Use varscan for germline variant calling.",
+        "type": "bool",
+        "default": false
       }
     },
     "detailed": {
