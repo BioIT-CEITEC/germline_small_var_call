@@ -77,7 +77,7 @@ rule RNA_SplitNCigars:
 
 rule varscan_single:
     input:
-        bam = bam_inputs,
+        bam = bam_input,
         ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
         lib_ROI=lib_ROI_input
     output:
