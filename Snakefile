@@ -64,7 +64,7 @@ sample_tab = pd.DataFrame.from_dict(config["samples"],orient="index")
 #     read_pair_tags = ["_R1","_R2"]
 #     paired = "PE"
 
-callers = config["callers"].split(';')
+#callers = config["callers"].split(';')
 
 # DEFAULT VALUES
 if not "min_variant_frequency" in config:

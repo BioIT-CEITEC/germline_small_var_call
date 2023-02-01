@@ -77,7 +77,7 @@ rule RNA_SplitNCigars:
 
 rule varscan_single:
     input:
-        bam = bam_inputs,
+        bam = bam_input,
         ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
         lib_ROI=lib_ROI_input
     output:
@@ -89,8 +89,8 @@ rule varscan_single:
     params:
         mpileup = "germline_varcalls/{sample_name}/varscan/{sample_name}.mpileup.gz",
         snp="germline_varcalls/{sample_name}/varscan/VarScan2.snp.vcf",
-        indel="germline_varcalls/{sample_name}/varscan/VarScan2.indel.vcf",
-        extra = config["varscan_extra_params"],
+        indel="germline_varcalls/{sample_name}/varscan/VarScan2.indel.vcf"
+        #extra = config["varscan_extra_params"],
         # " --strand-filter 0 --p-value 0.95 --min-coverage 50 --min-reads2 8 --min-avg-qual 25 --min-var-freq 0.0005",
     conda: "../wrappers/varscan/env.yaml"
     script: "../wrappers/varscan/script.py"
