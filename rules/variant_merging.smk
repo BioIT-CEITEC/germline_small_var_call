@@ -19,8 +19,10 @@ rule merge_variant_callers:
             vcf= "germline_varcalls/{sample_name}.final_variants.vcf",
             tsv = "germline_varcalls/{sample_name}.final_variants.tsv"
     log:    "logs/{sample_name}/merge_variant_callers.log"
-    params: min_var_reads_threshold = 5,
-            min_callers_threshold = 1
+    params: min_var_reads_threshold = config["min_var_reads_threshold"],
+            min_callers_threshold = config["min_callers_threshold"],
+            min_variant_frequency = config["min_variant_frequency"],
+            tmp_dir = GLOBAL_TMPD_PATH
     threads: 1
     conda:  "../wrappers/merge_variant_callers/env.yaml"
     script: "../wrappers/merge_variant_callers/script.py"
