@@ -59,8 +59,10 @@ shell(command)
 command = "Rscript "+os.path.abspath(os.path.dirname(__file__))+"/process_after_merge.R "+\
             snakemake.output.not_filtered_vcf + " " +\
             snakemake.output.tsv + " " +\
+            str(snakemake.params.min_variant_frequency) + " " +\
             str(snakemake.params.min_callers_threshold) + " " +\
-            str(snakemake.params.min_var_reads_threshold) +\
+            str(snakemake.params.min_var_reads_threshold) + " " +\
+            snakemake.params.tmp_dir +\
             " >> " + log_filename + " 2>&1"
 
 f = open(log_filename, 'at')

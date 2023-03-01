@@ -48,6 +48,16 @@
         "label": "Minimal variant frequency to report in percent.",
         "type": "int",
         "default": 25
+      },
+      "min_callers_threshold": {
+        "label": "Minimal number of callers supporting variant to report it.",
+        "type": "int",
+        "default": 1
+      },
+      "min_var_reads_threshold": {
+        "label": "Minimal number of variant reads supporting variant to report it.",
+        "type": "int",
+        "default": 5
       }
     }
   }

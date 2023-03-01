@@ -46,6 +46,7 @@ if config["germline_use_haplotypecaller"]:
 if config["germline_use_varscan"]:
     callers.append("varscan")
 
+config["min_callers_threshold"] = min(len(callers),config["min_callers_threshold"])
 
 ##### Config processing #####
 # Folders

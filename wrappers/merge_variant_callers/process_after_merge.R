@@ -4,9 +4,11 @@ suppressMessages(library(VennDiagram))
 run_all <- function(args){
   var_file <- args[1]
   output_file <- args[2]
-  min_callers_threshold <- as.numeric(args[3])
-  min_var_reads_threshold <- as.numeric(args[4])
-  
+  min_variant_frequency <- as.numeric(args[3]) / 100
+  min_callers_threshold <- as.numeric(args[4])
+  min_var_reads_threshold <- as.numeric(args[5])
+  tmp_dir <- args[6]
+
   vcf <- vcfR::read.vcfR(var_file,verbose = F)
 
   var_tab <- data.table(chrom = vcf@fix[,"CHROM"]
@@ -60,7 +62,7 @@ run_all <- function(args){
   # GET CALLING STATISTICS
   stat_tab <- var_tab[,list(raw_variants = .N,pass_filter = sum(is_pass),ratio = round(sum(is_pass) / .N,3)),by = c("caller")]
 
-  fwrite(stat_tab,file = gsub(".tsv$",".variant_stats.pdf",output_file),sep = "\t",col.names = T)
+  fwrite(stat_tab,file = gsub(".tsv$",".variant_stats.tsv",output_file),sep = "\t",col.names = T)
 
   caller_types <- unique(var_tab$caller)
   venn_list <- lapply(caller_types,function(x) var_tab[caller == x,paste(chrom,position,alternative,sep = "_")])
@@ -98,6 +100,8 @@ run_all <- function(args){
                             ,cat.fontface=2
                             ,category.names=caller_types,main = "Variants pass relative")
 
+  curent_wd <- getwd()
+  setwd(tmp_dir)
 
   pdf(gsub(".tsv$",".variant_stats.pdf",output_file))
   grid.draw(venn_raw)
@@ -111,18 +115,22 @@ run_all <- function(args){
 
   file.remove(list.files(".",pattern = "VennDiagram.*.log"))
 
+  setwd(curent_wd)
     
   #filter all not pass vars
   var_tab <- var_tab[is_pass == T]
   var_tab[,is_pass := NULL]
 
-  #join variants from callers and filter for min_callers_threshold
+  #join variants from callers and filter for min_callers_threshold,min_variant_frequency and min_variant_frequency
   var_tab[,call_info := paste0(var_reads,",",coverage_depth)]
   setorder(var_tab,caller)
   var_tab <- var_tab[,c("caller_count", "callers","all_callers_info") := list(.N,paste(caller,collapse = ","),paste(call_info,collapse = ";")),by = c("chrom","position","reference","alternative")]
   setorder(var_tab,-var_reads)
   var_tab <- unique(var_tab,by = c("chrom","position","reference","alternative"))
+
   var_tab <- var_tab[caller_count >= min_callers_threshold,]
+  var_tab <- var_tab[ var_reads / coverage_depth >= min_variant_frequency,]
+  var_tab <- var_tab[ var_reads >= min_variant_frequency,]
 
   #print vcf with just filtered variants
   vcf_out <- vcf[var_tab$index]
