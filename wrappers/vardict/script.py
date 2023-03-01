@@ -20,7 +20,7 @@ f.close()
 
 if snakemake.params.lib_ROI == "no":
     command = "Rscript " + os.path.abspath(os.path.dirname(__file__)) + "/create_bed_for_wgs_from_dict.R " + \
-              snakemake.input.regions + " " + \
+              str(snakemake.input.regions) + " " + \
               os.path.dirname(snakemake.output.vcf) + "/whole_genome_500kb_region.bed"
 
     f = open(log_filename, 'at')
@@ -30,7 +30,7 @@ if snakemake.params.lib_ROI == "no":
 
     input_bed_file = os.path.dirname(snakemake.output.vcf) + "/whole_genome_500kb_region.bed"
 else:
-    input_bed_file = snakemake.input.regions
+    input_bed_file = str(snakemake.input.regions)
 
 
 #AttributeError: 'Wildcards' object has no attribute 'full_name'
@@ -40,11 +40,11 @@ TEST_STRAND_BIAS = os.path.abspath(os.path.dirname(__file__)) + "/teststrandbias
 VAR2VCF = os.path.abspath(os.path.dirname(__file__)) + "/var2vcf_valid.pl"
 
 command = "vardict-java" + \
-          " -G " + snakemake.input.ref + \
+          " -G " + str(snakemake.input.ref) + \
           " -th " + str(snakemake.threads) + \
           " -N " + snakemake.wildcards.sample_name + \
           " -b " + snakemake.input.bam + \
-          " -c 1 -S 2 -E 3 -g 4 " + input_bed_file + \
+          " -c 1 -S 2 -E 3 -g 4 " + str(input_bed_file) + \
           " 2>> " + log_filename + \
           " | " + TEST_STRAND_BIAS + \
           " 2>> " + log_filename + \
