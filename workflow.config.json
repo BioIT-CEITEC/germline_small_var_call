@@ -1,13 +1,18 @@
 {
   "workflow_description": {
-    "name":"germline_small_var_call",
+    "name": "germline_small_var_call",
     "version": 1.2,
-    "label":"Germline small variant calling",
-    "type":"germline_small_var_call",
-    "inputs":[
+    "label": "Germline small variant calling",
+    "type": "germline_small_var_call",
+    "run_parameters": {
+      "cpu": 32,
+      "memory": 124
+    },
+    "inputs": [
       "mapped/{sample}.bam*"
     ],
-    "outputs":[
+    "outputs": [
+      "config.json",
       "logs/*",
       "germline_varcalls/*"
     ]
@@ -20,7 +25,7 @@
     "reference",
     "lib_ROI"
   ],
-  "gui_params" : {
+  "gui_params": {
     "primary": {
       "germline_use_strelka": {
         "label": "Use strelka for germline variant calling.",
@@ -59,7 +64,22 @@
         "type": "int",
         "default": 5
       }
+    },
+    "samples": {
+      "donor": {
+        "label": "Patient ID",
+        "type": "string",
+        "default": "",
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "tumor_normal_paired": false
+            }
+          }
+        }
+      }
     }
   }
 }
-
