@@ -29,4 +29,3 @@ rule merge_variant_callers:
 
 
 
-

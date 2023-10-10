@@ -37,85 +37,85 @@ shell(command)
 # Output prefix
 
 
-if snakemake.params.calling_type == "paired":
-    prefix = os.path.splitext(os.path.splitext(snakemake.output.snp)[0])[0]
-    command = "varscan somatic" \
-              " " + snakemake.params.normal_pileup + \
-              " " + snakemake.params.tumor_pileup + \
-              " " + prefix + \
-              " " + extra_params + \
-              " --output-vcf" + \
-              " --output-snp " + snakemake.output.snp + \
-              " --output-indel " + snakemake.output.indel + \
-              " 2>> " + log_filename
+# if snakemake.params.calling_type == "paired":
+#     prefix = os.path.splitext(os.path.splitext(snakemake.output.snp)[0])[0]
+#     command = "varscan somatic" \
+#               " " + snakemake.params.normal_pileup + \
+#               " " + snakemake.params.tumor_pileup + \
+#               " " + prefix + \
+#               " " + extra_params + \
+#               " --output-vcf" + \
+#               " --output-snp " + snakemake.output.snp + \
+#               " --output-indel " + snakemake.output.indel + \
+#               " 2>> " + log_filename
+#
+#     f = open(log_filename, 'at')
+#     f.write("## COMMAND: " + command + "\n")
+#     f.close()
+#     shell(command)
+#
+#     command = "rm " + snakemake.params.normal_pileup
+#     f = open(log_filename, 'at')
+#     f.write("## COMMAND: " + command + "\n")
+#     f.close()
+#     shell(command)
+#
+#     command = "rm " + snakemake.params.tumor_pileup
+#     f = open(log_filename, 'at')
+#     f.write("## COMMAND: " + command + "\n")
+#     f.close()
+#     shell(command)
+#
+# else:
+
+
+command = "varscan mpileup2snp " + snakemake.params.mpileup + \
+          " " + extra_params + \
+          " --output-vcf" + \
+          " > " + snakemake.params.snp + \
+          " 2>> " + log_filename
+
+f = open(log_filename, 'at')
+f.write("## COMMAND: " + command + "\n")
+f.close()
+shell(command)
+
+command = "varscan mpileup2indel " + snakemake.params.mpileup + \
+          " " + extra_params + \
+          " --output-vcf" + \
+          " > " + snakemake.params.indel + \
+          " 2>> " + log_filename
+
+f = open(log_filename, 'at')
+f.write("## COMMAND: " + command + "\n")
+f.close()
+shell(command)
+
+command = "rm " + snakemake.params.mpileup
+f = open(log_filename, 'at')
+f.write("## COMMAND: " + command + "\n")
+f.close()
+shell(command)
+
+if os.stat(snakemake.params.snp).st_size > 0 or os.stat(snakemake.params.indel).st_size > 0:
+    command = "Rscript " + os.path.abspath(os.path.dirname(__file__)) + "/combine_vcfs.R " + \
+              " " + snakemake.params.snp + \
+              " " + snakemake.params.indel + \
+              " " + snakemake.output.vcf + \
+              " >> " + log_filename + " 2>&1"
 
     f = open(log_filename, 'at')
     f.write("## COMMAND: " + command + "\n")
-    f.close()
-    shell(command)
-
-    command = "rm " + snakemake.params.normal_pileup
-    f = open(log_filename, 'at')
-    f.write("## COMMAND: " + command + "\n")
-    f.close()
-    shell(command)
-
-    command = "rm " + snakemake.params.tumor_pileup
-    f = open(log_filename, 'at')
-    f.write("## COMMAND: " + command + "\n")
+    f.write("## args <- c(\"" + "\",\"".join(command.split(" ")[2:-3]) + "\")\n")
     f.close()
     shell(command)
 
 else:
-
-
-    command = "varscan mpileup2snp " + snakemake.params.tumor_pileup + \
-              " " + extra_params + \
-              " --output-vcf" + \
-              " > " + snakemake.params.snp + \
-              " 2>> " + log_filename
-
+    command = "touch " + snakemake.output.vcf + " >> " + log_filename + " 2>&1"
     f = open(log_filename, 'at')
     f.write("## COMMAND: " + command + "\n")
     f.close()
     shell(command)
-
-    command = "varscan mpileup2indel " + snakemake.params.tumor_pileup + \
-              " " + extra_params + \
-              " --output-vcf" + \
-              " > " + snakemake.params.indel + \
-              " 2>> " + log_filename
-
-    f = open(log_filename, 'at')
-    f.write("## COMMAND: " + command + "\n")
-    f.close()
-    shell(command)
-
-    command = "rm " + snakemake.params.tumor_pileup
-    f = open(log_filename, 'at')
-    f.write("## COMMAND: " + command + "\n")
-    f.close()
-    shell(command)
-
-    if os.stat(snakemake.params.snp).st_size > 0 or os.stat(snakemake.params.indel).st_size > 0:
-        command = "Rscript " + os.path.abspath(os.path.dirname(__file__)) + "/combine_vcfs.R " + \
-                  " " + snakemake.params.snp + \
-                  " " + snakemake.params.indel + \
-                  " " + snakemake.output.vcf + \
-                  " >> " + log_filename + " 2>&1"
-
-        f = open(log_filename, 'at')
-        f.write("## COMMAND: " + command + "\n")
-        f.write("## args <- c(\"" + "\",\"".join(command.split(" ")[2:-3]) + "\")\n")
-        f.close()
-        shell(command)
-
-    else:
-        command = "touch " + snakemake.output.vcf + " >> " + log_filename + " 2>&1"
-        f = open(log_filename, 'at')
-        f.write("## COMMAND: " + command + "\n")
-        f.close()
-        shell(command)
 
 # # DELETE mileups
 # command = "rm " + snakemake.params.tumor_pileup

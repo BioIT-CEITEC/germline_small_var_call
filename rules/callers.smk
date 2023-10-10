@@ -64,6 +64,27 @@ rule strelka:
     conda: "../wrappers/strelka/env.yaml"
     script: "../wrappers/strelka/script.py"
 
+rule varscan:
+    input:
+        bam = bam_input,
+        ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
+        lib_ROI=lib_ROI_input
+    output:
+        vcf="germline_varcalls/{sample_name}/varscan/varscan.vcf",
+    log: "logs/{sample_name}/callers/varscan.log"
+    threads: 1
+    resources:
+        mem_mb=9000
+    params:
+        mpileup = "germline_varcalls/{sample_name}/varscan/{sample_name}.mpileup",
+        snp="germline_varcalls/{sample_name}/varscan/VarScan2.snp.vcf",
+        indel="germline_varcalls/{sample_name}/varscan/VarScan2.indel.vcf"
+        #extra = config["varscan_extra_params"],
+        # " --strand-filter 0 --p-value 0.95 --min-coverage 50 --min-reads2 8 --min-avg-qual 25 --min-var-freq 0.0005",
+    conda: "../wrappers/varscan/env.yaml"
+    script: "../wrappers/varscan/script.py"
+
+
 rule RNA_SplitNCigars:
     input: bam = "mapped/{sample_name}.bam",
            ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0]
@@ -75,25 +96,7 @@ rule RNA_SplitNCigars:
     script: "../wrappers/RNA_SplitNCigars/script.py"
 
 
-rule varscan_single:
-    input:
-        bam = bam_input,
-        ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
-        lib_ROI=lib_ROI_input
-    output:
-        vcf="germline_varcalls/{sample_name}/varscan/VarScan2.vcf",
-    log: "logs/{sample_name}/callers/varscan.log"
-    threads: 1
-    resources:
-        mem_mb=9000
-    params:
-        mpileup = "germline_varcalls/{sample_name}/varscan/{sample_name}.mpileup.gz",
-        snp="germline_varcalls/{sample_name}/varscan/VarScan2.snp.vcf",
-        indel="germline_varcalls/{sample_name}/varscan/VarScan2.indel.vcf"
-        #extra = config["varscan_extra_params"],
-        # " --strand-filter 0 --p-value 0.95 --min-coverage 50 --min-reads2 8 --min-avg-qual 25 --min-var-freq 0.0005",
-    conda: "../wrappers/varscan/env.yaml"
-    script: "../wrappers/varscan/script.py"
+
 
 
 
