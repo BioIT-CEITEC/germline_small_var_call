@@ -29,7 +29,7 @@ f.close()
 if snakemake.params.lib_ROI == "no":
     intervals_call = ""
 else:
-    intervals_call = " -L " + snakemake.input.regions
+    intervals_call = " -L " + str(snakemake.input.regions)
 
 command = "mkdir -p " + os.path.dirname(snakemake.params.bamout)
 shell(command)
@@ -39,7 +39,7 @@ shell(command)
 
 command = "export TMPDIR=./tmp TMP=./tmp && gatk --java-options \"-Xmx2g -Djava.io.tmpdir=./tmp\" HaplotypeCaller" + \
                " --tmp-dir ./tmp " +\
-               " -R "+ snakemake.input.ref +\
+               " -R "+ str(snakemake.input.ref) +\
                " -I "+ snakemake.input.bam +\
                intervals_call +\
                " --native-pair-hmm-threads "+ str(snakemake.threads) +\
