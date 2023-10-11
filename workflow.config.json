@@ -4,9 +4,7 @@
     "version": 1.0,
     "label":"Germline small variant calling - test",
     "type":"germline_small_var_call",
-    "inputs":[
-      "mapped/{sample}.bam*"
-    ],
+
     "outputs":[
       "final_variant_table.xlsx",
       "final_variant_table.tsv",
