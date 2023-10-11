@@ -4,7 +4,6 @@
     "version": 1.0,
     "label":"Germline small variant calling - test",
     "type":"germline_small_var_call",
-
     "outputs":[
       "final_variant_table.xlsx",
       "final_variant_table.tsv",
@@ -40,12 +39,6 @@
         "label": "Variant callers to use",
         "type": "string",
         "default": "strelka;vardict;haplotypecaller"
-      },
-      "format": {
-        "label": "Result variant table format ",
-        "type": "enum",
-        "default": "default",
-        "list": ##INCLUDE:general/germline_small_var_call_fromat_files/format_info.json##
       }
     },
     "detailed": {
