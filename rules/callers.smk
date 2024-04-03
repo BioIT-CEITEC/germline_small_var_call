@@ -64,6 +64,8 @@ rule strelka:
     conda: "../wrappers/strelka/env.yaml"
     script: "../wrappers/strelka/script.py"
 
+
+
 rule varscan:
     input:
         bam = bam_input,

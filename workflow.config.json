@@ -12,9 +12,7 @@
       "mapped/{sample}.bam*"
     ],
     "outputs": [
-      "config.json",
-      "logs/*",
-      "germline_varcalls/*"
+      "germline_varcalls/{sample}.final_variants.vcf"
     ]
   },
   "general_params": [

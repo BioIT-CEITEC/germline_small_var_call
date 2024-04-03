@@ -86,4 +86,4 @@ include: "rules/variant_merging.smk"
 # RULE ALL
 rule all:
     input:  
-        final_variants = expand("germline_varcalls/{sample_name}.final_variants.tsv", sample_name = sample_tab.sample_name)
+        final_variants = expand("germline_varcalls/{sample_name}.final_variants.vcf", sample_name = sample_tab.sample_name)
