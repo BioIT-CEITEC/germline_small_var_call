@@ -8,7 +8,7 @@ def bam_input(wildcards):
 
 def lib_ROI_input(wildcards):
     if config["lib_ROI"] != "wgs":
-        return config["dna_panel"] #defined in bioroots utilities
+        return config["organism_dna_panel"] #defined in bioroots utilities
     else:
         return config["organism_dict"],
 
