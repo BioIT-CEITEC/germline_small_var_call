@@ -21,11 +21,15 @@ use rule * from BR as other_*
 
 sample_tab = BR.load_sample()
 
+config["ref_name"] = []
+
 config = BR.load_organism()
 
 config["material"] = "DNA"
 if config["lib_ROI"] != "wgs" and config["lib_ROI"] != "rna":
-    config["reference"] = config["ref"] #defined in bioroots utilities
+    config["reference"] = config["ref_name"] #defined in bioroots utilities
+    config["organism_fasta"] = config["fasta_vc"]
+    config["organism_dict"] = config["dict_vc"]
 else:
     if config["lib_ROI"] == "rna":
         config["material"] = "RNA"

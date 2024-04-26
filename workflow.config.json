@@ -64,22 +64,6 @@
         "type": "int",
         "default": 5
       }
-    },
-    "samples": {
-      "donor": {
-        "label": "Patient ID",
-        "type": "string",
-        "default": "",
-        "conditions": {
-          "relevance": {
-            "operand": "equal",
-            "negation": false,
-            "values": {
-              "tumor_normal_paired": false
-            }
-          }
-        }
-      }
     }
   }
 }

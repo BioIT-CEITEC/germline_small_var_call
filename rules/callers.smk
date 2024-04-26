@@ -14,7 +14,7 @@ def lib_ROI_input(wildcards):
 
 rule haplotypecaller:
     input:  bam = bam_input,
-            ref = config["fasta_vc"],
+            ref = config["organism_fasta"],
             regions = lib_ROI_input
     output: vcf="germline_varcalls/{sample_name}/haplotypecaller/haplotypecaller.vcf"
     log: "logs/{sample_name}/callers/haplotypecaller.log"
@@ -22,13 +22,13 @@ rule haplotypecaller:
     resources:
         mem_mb=6000
     params: bamout="germline_varcalls/{sample_name}/haplotypecaller/realigned.bam",
-            lib_ROI = config["folder_name"] #defined in bioroots utilities
+            lib_ROI = config["lib_ROI"] #re-defined in bioroots utilities
     conda: "../wrappers/haplotypecaller/env.yaml"
     script: "../wrappers/haplotypecaller/script.py"
 
 rule vardict:
     input:  bam = bam_input,
-            ref = config["fasta_vc"],
+            ref = config["organism_fasta"],
             regions = lib_ROI_input
     output: vcf="germline_varcalls/{sample_name}/vardict/vardict.vcf"
     log: "logs/{sample_name}/callers/vardict.log"
@@ -37,7 +37,7 @@ rule vardict:
         mem_mb=8000
     params:
         AF_threshold=config["min_variant_frequency"],
-        lib_ROI=config["folder_name"]
+        lib_ROI=config["lib_ROI"]
     conda: "../wrappers/vardict/env.yaml"
     script: "../wrappers/vardict/script.py"
 
@@ -51,7 +51,7 @@ def strelka_lib_ROI_inputs(wildcards):
 rule strelka:
     input:  unpack(strelka_lib_ROI_inputs),
             bam = bam_input,
-            ref = config["fasta_vc"],
+            ref = config["organism_fasta"],
     output: vcf = "germline_varcalls/{sample_name}/strelka/strelka.vcf"
     log: "logs/{sample_name}/callers/strelka.log"
     threads: 10
@@ -59,7 +59,7 @@ rule strelka:
         mem_mb=6000
     params: dir = os.path.join(GLOBAL_TMPD_PATH,"germline_varcalls/{sample_name}/strelka"),
             material=config["material"],
-            lib_ROI=config["folder_name"],
+            lib_ROI=config["lib_ROI"],
             vcf= os.path.join(GLOBAL_TMPD_PATH,"germline_varcalls/{sample_name}/strelka/results/variants/variants.vcf.gz"),
     conda: "../wrappers/strelka/env.yaml"
     script: "../wrappers/strelka/script.py"
@@ -67,7 +67,7 @@ rule strelka:
 rule varscan:
     input:
         bam = bam_input,
-        ref = config["fasta_vc"],
+        ref = config["organism_fasta"],
         lib_ROI = lib_ROI_input
     output:
         vcf="germline_varcalls/{sample_name}/varscan/varscan.vcf",
