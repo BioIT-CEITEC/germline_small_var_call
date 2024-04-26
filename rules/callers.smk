@@ -87,7 +87,7 @@ rule varscan:
 
 rule RNA_SplitNCigars:
     input: bam = "mapped/{sample_name}.bam",
-           ref = config["fasta_vc"]
+           ref = config["organism_fasta"]
     output: bam = "mapped/{sample_name}.RNAsplit.bam",
             bai = "mapped/{sample_name}.RNAsplit.bam.bai",
     log:    run = "logs/{sample_name}/callers/RNA_SplitNCigars.log",
