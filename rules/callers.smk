@@ -43,8 +43,8 @@ rule vardict:
 
 def strelka_lib_ROI_inputs(wildcards):
     if config["lib_ROI"] != "no":
-        return {'regions_gz': config["dna_panel"] + ".gz",
-                'regions_tbi': config["dna_panel"] + ".gz.tbi"}
+        return {'regions_gz': config["organism_dna_panel"] + ".gz",
+                'regions_tbi': config["organism_dna_panel"] + ".gz.tbi"}
     else:
         return {}
 
