@@ -10,7 +10,7 @@ def lib_ROI_input(wildcards):
     if config["lib_ROI"] != "wgs":
         return config["organism_dna_panel"] #defined in bioroots utilities
     else:
-        return config["organism_dict"],
+        return config["organism_dict"] #defined in bioroots utilities
 
 rule haplotypecaller:
     input:  bam = bam_input,
@@ -94,17 +94,6 @@ rule RNA_SplitNCigars:
     params: bai = "mapped/{sample_name}.RNAsplit.bai"
     conda:  "../wrappers/RNA_SplitNCigars/env.yaml"
     script: "../wrappers/RNA_SplitNCigars/script.py"
-
-
-
-
-
-
-
-
-
-
-
 
 # def mpileup_bam_input(wildcards):
 #     if config["material"] != "RNA":
