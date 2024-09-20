@@ -63,6 +63,10 @@
         "label": "Minimal number of variant reads supporting variant to report it.",
         "type": "int",
         "default": 5
+      },
+      "tumor_normal_paired": {
+        "type": "constant",
+        "default": false
       }
     }
   }
