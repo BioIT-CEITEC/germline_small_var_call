@@ -29,6 +29,22 @@
   ],
   "gui_params": {
     "primary": {
+      "calling_type": {
+        "type": "constant",
+        "default": "germline"
+      },
+      "format": {
+        "label": "Result variant table format",
+        "type": "enum",
+        "dynamicEnumName": "small_var_format",
+        "filters": {
+          "group": {
+            "param": "calling_type",
+            "type": "value",
+            "showGroupLabel": false
+          }
+        }
+      },
       "germline_use_strelka": {
         "label": "Use strelka for germline variant calling.",
         "type": "bool",
