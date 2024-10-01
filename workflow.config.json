@@ -44,26 +44,6 @@
             "showGroupLabel": false
           }
         }
-      },
-      "germline_use_strelka": {
-        "label": "Use strelka for germline variant calling.",
-        "type": "bool",
-        "default": true
-      },
-      "germline_use_vardict": {
-        "label": "Use vardict for germline variant calling.",
-        "type": "bool",
-        "default": true
-      },
-      "germline_use_haplotypecaller": {
-        "label": "Use haplotypecaller for germline variant calling.",
-        "type": "bool",
-        "default": true
-      },
-      "germline_use_varscan": {
-        "label": "Use varscan for germline variant calling.",
-        "type": "bool",
-        "default": false
       }
     },
     "detailed": {
@@ -84,6 +64,26 @@
       },
       "tumor_normal_paired": {
         "type": "constant",
+        "default": false
+      },
+            "germline_use_strelka": {
+        "label": "Use strelka for germline variant calling.",
+        "type": "bool",
+        "default": true
+      },
+      "germline_use_vardict": {
+        "label": "Use vardict for germline variant calling.",
+        "type": "bool",
+        "default": true
+      },
+      "germline_use_haplotypecaller": {
+        "label": "Use haplotypecaller for germline variant calling.",
+        "type": "bool",
+        "default": true
+      },
+      "germline_use_varscan": {
+        "label": "Use varscan for germline variant calling.",
+        "type": "bool",
         "default": false
       }
     }
