@@ -1,7 +1,7 @@
 {
   "workflow_description": {
     "name": "germline_small_var_call",
-    "version": 2.0,
+    "version": 3.0,
     "label": "Germline small variant calling",
     "type": "germline_small_var_call",
     "run_parameters": {
@@ -52,18 +52,6 @@
       "calling_type": {
         "type": "constant",
         "default": "germline"
-      },
-      "format": {
-        "label": "Result variant table format",
-        "type": "enum",
-        "dynamicEnumName": "small_var_format",
-        "filters": {
-          "group": {
-            "param": "calling_type",
-            "type": "value",
-            "showGroupLabel": false
-          }
-        }
       }
     },
     "detailed": {
