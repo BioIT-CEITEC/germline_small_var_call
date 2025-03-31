@@ -1,5 +1,5 @@
 suppressMessages(library(data.table))
-# suppressMessages(library(VennDiagram))
+suppressMessages(library(VennDiagram))
 
 run_all <- function(args){
   var_file <- args[1]
@@ -179,5 +179,5 @@ run_all <- function(args){
 
 #run as Rscript
 # 
-# args <- commandArgs(trailingOnly = T)
-# run_all(args)
+args <- commandArgs(trailingOnly = T)
+run_all(args)
