@@ -154,7 +154,8 @@ run_all <- function(args){
       var_tab[sapply(seq_along(reference),function(x) grepl(reference[x],alternative[x])),new_pos := new_pos + nchar(reference)]
       var_tab[sapply(seq_along(reference),function(x) grepl(alternative[x],reference[x])),new_pos := new_pos + nchar(alternative)]
 
-      var_tab[,var_name := paste0(chrom,"_",new_pos,"_",new_ref,"/",new_alt)]
+      var_tab[,var_name := paste0(chrom,"_",position,"_",reference,"/",alternative)]
+
     } else {
       var_tab[,var_name := chrom]
     }
