@@ -8,28 +8,28 @@ def bam_input(wildcards):
 
 def lib_ROI_input(wildcards):
     if config["lib_ROI"] != "wgs":
-        return expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0]
+        return config["organism_dna_panel"] #defined in bioroots utilities
     else:
-        return expand("{ref_dir}/seq/{ref_name}.dict",ref_dir=reference_directory,ref_name=config["reference"])[0],
+        return config["organism_dict"] #defined in bioroots utilities
 
 rule haplotypecaller:
     input:  bam = bam_input,
-            ref=expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
-            regions=lib_ROI_input
+            ref = config["organism_fasta"],
+            regions = lib_ROI_input
     output: vcf="germline_varcalls/{sample_name}/haplotypecaller/haplotypecaller.vcf"
     log: "logs/{sample_name}/callers/haplotypecaller.log"
     threads: 5
     resources:
         mem_mb=6000
     params: bamout="germline_varcalls/{sample_name}/haplotypecaller/realigned.bam",
-            lib_ROI=config["lib_ROI"]
+            lib_ROI = config["lib_ROI"] #re-defined in bioroots utilities
     conda: "../wrappers/haplotypecaller/env.yaml"
     script: "../wrappers/haplotypecaller/script.py"
 
 rule vardict:
     input:  bam = bam_input,
-            ref=expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
-            regions=lib_ROI_input
+            ref = config["organism_fasta"],
+            regions = lib_ROI_input
     output: vcf="germline_varcalls/{sample_name}/vardict/vardict.vcf"
     log: "logs/{sample_name}/callers/vardict.log"
     threads: 10
@@ -43,15 +43,15 @@ rule vardict:
 
 def strelka_lib_ROI_inputs(wildcards):
     if config["lib_ROI"] != "no":
-        return {'regions_gz': expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed.gz",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0],
-                'regions_tbi':expand("{ref_dir}/intervals/{lib_ROI}/{lib_ROI}.bed.gz.tbi",ref_dir=reference_directory,lib_ROI=config["lib_ROI"])[0]}
+        return {'regions_gz': config["organism_dna_panel"] + ".gz",
+                'regions_tbi': config["organism_dna_panel"] + ".gz.tbi"}
     else:
         return {}
 
 rule strelka:
     input:  unpack(strelka_lib_ROI_inputs),
             bam = bam_input,
-            ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
+            ref = config["organism_fasta"],
     output: vcf = "germline_varcalls/{sample_name}/strelka/strelka.vcf"
     log: "logs/{sample_name}/callers/strelka.log"
     threads: 10
@@ -67,8 +67,8 @@ rule strelka:
 rule varscan:
     input:
         bam = bam_input,
-        ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0],
-        lib_ROI=lib_ROI_input
+        ref = config["organism_fasta"],
+        lib_ROI = lib_ROI_input
     output:
         vcf="germline_varcalls/{sample_name}/varscan/varscan.vcf",
     log: "logs/{sample_name}/callers/varscan.log"
@@ -87,24 +87,13 @@ rule varscan:
 
 rule RNA_SplitNCigars:
     input: bam = "mapped/{sample_name}.bam",
-           ref = expand("{ref_dir}/seq/{ref_name}.fa",ref_dir=reference_directory,ref_name=config["reference"])[0]
+           ref = config["organism_fasta"]
     output: bam = "mapped/{sample_name}.RNAsplit.bam",
             bai = "mapped/{sample_name}.RNAsplit.bam.bai",
     log:    run = "logs/{sample_name}/callers/RNA_SplitNCigars.log",
     params: bai = "mapped/{sample_name}.RNAsplit.bai"
     conda:  "../wrappers/RNA_SplitNCigars/env.yaml"
     script: "../wrappers/RNA_SplitNCigars/script.py"
-
-
-
-
-
-
-
-
-
-
-
 
 # def mpileup_bam_input(wildcards):
 #     if config["material"] != "RNA":

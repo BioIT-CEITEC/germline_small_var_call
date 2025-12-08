@@ -1,7 +1,7 @@
 {
   "workflow_description": {
     "name": "germline_small_var_call",
-    "version": 1.2,
+    "version": 2.0,
     "label": "Germline small variant calling",
     "type": "germline_small_var_call",
     "run_parameters": {
@@ -22,7 +22,9 @@
     "sample_name"
   ],
   "requested_params": [
-    "reference",
+    "organism",
+    "assembly",
+    "release",
     "lib_ROI"
   ],
   "gui_params": {
@@ -46,6 +48,22 @@
         "label": "Use varscan for germline variant calling.",
         "type": "bool",
         "default": false
+      },
+      "calling_type": {
+        "type": "constant",
+        "default": "germline"
+      },
+      "format": {
+        "label": "Result variant table format",
+        "type": "enum",
+        "dynamicEnumName": "small_var_format",
+        "filters": {
+          "group": {
+            "param": "calling_type",
+            "type": "value",
+            "showGroupLabel": false
+          }
+        }
       }
     },
     "detailed": {
@@ -63,23 +81,11 @@
         "label": "Minimal number of variant reads supporting variant to report it.",
         "type": "int",
         "default": 5
-      }
-    },
-    "samples": {
-      "donor": {
-        "label": "Patient ID",
-        "type": "string",
-        "default": "",
-        "conditions": {
-          "relevance": {
-            "operand": "equal",
-            "negation": false,
-            "values": {
-              "tumor_normal_paired": false
-            }
-          }
-        }
-      }
+      },
+      "tumor_normal_paired": {
+        "type": "constant",
+        "default": false
+      }    
     }
   }
 }

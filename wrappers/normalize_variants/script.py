@@ -60,11 +60,41 @@ if os.stat(snakemake.input.vcf).st_size > 0:
 
 
     # adding all contigs to vcf from .dict files because of the stupid GATK
-    f = open(log_filename, 'at')
-    command = "Rscript "+os.path.abspath(os.path.dirname(__file__))+"/add_contigs_to_vcf.R " + snakemake.output.vcf + " " + snakemake.input.dict +\
-              " >> " + log_filename + " 2>&1"
-    f.write("## COMMAND: "+command+"\n")
-    shell(command)
+    def add_contigs_to_vcf(vcf_file, dict_file):
+        # Read VCF file lines
+        with open(vcf_file, 'r') as f:
+            lines = f.readlines()
+
+        # Find header and non-header indices
+        header_non_contig_idx = [i for i, line in enumerate(lines) if line.startswith("##") and "contig" not in line]
+        non_header_idx = [i for i, line in enumerate(lines) if not line.startswith("##")]
+
+        # Read the dictionary file
+        with open(dict_file, 'r') as f:
+            dict_lines = f.readlines()
+
+        # Filter lines that start with @SQ and extract necessary columns
+        contig_tab = [line.strip().split('\t') for line in dict_lines if line.startswith('@SQ')]
+        # Extract contig lines
+        contig_lines = [f"##contig=<ID={line[1].replace('SN:', '')},length={line[2].replace('LN:', '')}>\n" for line in contig_tab]
+
+        # Write the header, contig information, and the rest of the VCF file back to the file
+        with open(vcf_file, 'w') as f:
+            for idx in header_non_contig_idx:
+                f.write(lines[idx])
+            for contig_line in contig_lines:
+                f.write(contig_line)
+            for idx in non_header_idx:
+                f.write(lines[idx])
+
+
+    add_contigs_to_vcf(snakemake.output.vcf, snakemake.input.dict)
+
+    # f = open(log_filename, 'at')
+    # command = "Rscript "+os.path.abspath(os.path.dirname(__file__))+"/add_contigs_to_vcf.R " + snakemake.output.vcf + " " + snakemake.input.dict +\
+    #           " >> " + log_filename + " 2>&1"
+    # f.write("## COMMAND: "+command+"\n")
+    # shell(command)
 
     # TESTING DELETE empty rows
     f = open(log_filename, 'at')
