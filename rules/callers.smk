@@ -7,7 +7,7 @@ def bam_input(wildcards):
     return expand("mapped/{input_bam}.{tag}",input_bam=wildcards.sample_name,tag=tag)[0]
 
 def lib_ROI_input(wildcards):
-    if config["lib_ROI"] != "wgs":
+    if config["lib_ROI"] != "wgs" and config["lib_ROI"] != "rna":
         return config["organism_dna_panel"] #defined in bioroots utilities
     else:
         return config["organism_dict"] #defined in bioroots utilities
@@ -42,7 +42,7 @@ rule vardict:
     script: "../wrappers/vardict/script.py"
 
 def strelka_lib_ROI_inputs(wildcards):
-    if config["lib_ROI"] != "no":
+    if config["lib_ROI"] != "wgs" and config["lib_ROI"] != "rna":
         return {'regions_gz': config["organism_dna_panel"] + ".gz",
                 'regions_tbi': config["organism_dna_panel"] + ".gz.tbi"}
     else:
