@@ -180,5 +180,5 @@ run_all <- function(args){
 
 #run as Rscript
 # 
-# args <- commandArgs(trailingOnly = T)
-# run_all(args)
+args <- commandArgs(trailingOnly = T)
+run_all(args)
