@@ -134,7 +134,7 @@ run_all <- function(args){
 
     var_tab <- var_tab[caller_count >= min_callers_threshold,]
     var_tab <- var_tab[ var_reads / coverage_depth >= min_variant_frequency,]
-    var_tab <- var_tab[ var_reads >= min_variant_frequency,]
+    var_tab <- var_tab[ var_reads >= min_var_reads_threshold,]
 
     #print vcf with just filtered variants
     vcf_out <- vcf[var_tab$index]
